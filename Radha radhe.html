@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="theme-color" content="#5b3e18">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <title>Shree Radha Jap Counter (Premium)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Yatra+One&display=swap" rel="stylesheet">
     <style>
@@ -10,15 +16,14 @@
         
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to bottom, #fff5e1, #f2e2c4); /* Soft warm sand background */
+            background: linear-gradient(to bottom, #fff5e1, #f2e2c4);
             height: 100vh;
             display: flex;
             justify-content: center;
-            color: #4a3000; /* Dark brown/gold text */
+            color: #4a3000;
             overflow: hidden;
         }
 
-        /* Mobile Container Simulation */
         .app-container {
             width: 100%;
             max-width: 450px;
@@ -30,7 +35,6 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        /* Top Header */
         .top-bar {
             background: #5b3e18;
             color: #ffd700;
@@ -46,7 +50,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* User Profile & Sync Pill */
         .status-pill {
             margin: 15px auto;
             background: rgba(255, 255, 255, 0.7);
@@ -62,11 +65,6 @@
             z-index: 10;
         }
 
-        .status-pill img {
-            width: 24px; height: 24px; border-radius: 50%;
-        }
-
-        /* Ornate Decorations Area */
         .main-area {
             flex-grow: 1;
             display: flex;
@@ -76,7 +74,6 @@
             position: relative;
         }
 
-        /* Decorations (Emojis as stand-ins for illustrations) */
         .deco-peacock { position: absolute; font-size: 4rem; opacity: 0.9; z-index: 0; }
         .peacock-left { left: 10px; top: 30%; transform: scaleX(-1); }
         .peacock-right { right: 10px; top: 30%; }
@@ -85,7 +82,6 @@
         .lotus-1 { left: 30px; bottom: 20%; }
         .lotus-2 { right: 30px; bottom: 20%; }
 
-        /* Counter Box */
         .counter-box {
             text-align: center;
             z-index: 10;
@@ -99,12 +95,10 @@
         .counter-box h2 { font-size: 1.2rem; font-weight: 600; color: #5b3e18; }
         .counter-box .count { font-size: 4rem; font-weight: 700; color: #a67c00; font-family: 'Poppins', sans-serif; }
 
-        /* The Mala (Beads) Ring */
         .mala-ring {
             width: 260px;
             height: 260px;
             border-radius: 50%;
-            /* Simulated rudraksha/tulsi beads using dotted border */
             border: 22px dotted #8b4513; 
             display: flex;
             align-items: center;
@@ -115,7 +109,6 @@
             z-index: 10;
         }
 
-        /* Golden Jap Button */
         .gold-btn {
             width: 170px;
             height: 170px;
@@ -142,7 +135,6 @@
             box-shadow: inset 0 2px 10px rgba(0,0,0,0.6), 0 5px 10px rgba(0,0,0,0.4);
         }
 
-        /* Central Blue Gem on Button */
         .gem {
             width: 25px; height: 25px;
             background: radial-gradient(circle at 30% 30%, #00f0ff, #006d77);
@@ -152,7 +144,6 @@
             border: 2px solid #fff;
         }
 
-        /* Reset Button */
         .reset-btn {
             margin-top: 30px;
             background: #006d77;
@@ -167,7 +158,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* Bottom Navbar */
         .bottom-nav {
             background: #004d55;
             color: #d4af37;
@@ -187,32 +177,26 @@
 
     <div class="app-container">
         
-        <!-- Header -->
         <div class="top-bar">
             🦚 श्री राधा जप काउंटर 🦚
         </div>
 
-        <!-- Sync & Profile Status -->
         <div class="status-pill">
             <span>👤 User Profile |</span>
             <span id="syncStatus">⏳ Connecting...</span>
         </div>
 
-        <!-- Main Display Area -->
         <div class="main-area">
-            <!-- Background Ornaments -->
             <div class="deco-peacock peacock-left">🦚</div>
             <div class="deco-peacock peacock-right">🦚</div>
             <div class="deco-lotus lotus-1">🪷</div>
             <div class="deco-lotus lotus-2">🪷</div>
 
-            <!-- Counter -->
             <div class="counter-box">
                 <h2>राधा नाम जाप<br>Total Count</h2>
                 <div class="count" id="countDisplay">0</div>
             </div>
 
-            <!-- Mala & Button -->
             <div class="mala-ring">
                 <button class="gold-btn" id="tapBtn">
                     JAP
@@ -224,11 +208,10 @@
             <button class="reset-btn" id="resetBtn">🦚 Reset Counter 🦚</button>
         </div>
 
-        <!-- Footer Progress -->
         <div class="bottom-nav">
             <span class="nav-icons">🏠</span>
             <div class="progress-text">
-                <strong id="dateDisplay">10 June 2026</strong><br>
+                <strong id="dateDisplay"></strong><br>
                 Progress: <span id="progressCount">0</span> / 20000
             </div>
             <span class="nav-icons">⚙️</span>
@@ -236,17 +219,11 @@
 
     </div>
 
-    <!-- Firebase v10 SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // 🔥 FIREBASE CONFIG (Add your details here to enable cloud sync) 🔥
-        const firebaseConfig = {
-            // apiKey: "YOUR_API_KEY",
-            // authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            // projectId: "YOUR_PROJECT_ID"
-        };
+        const firebaseConfig = {};
 
         let db = null;
         let counterRef = null;
@@ -260,20 +237,17 @@
             console.log("Firebase not configured yet. Using local storage.");
         }
 
-        // DOM Elements
         const countDisplay = document.getElementById('countDisplay');
         const progressCount = document.getElementById('progressCount');
         const tapBtn = document.getElementById('tapBtn');
         const resetBtn = document.getElementById('resetBtn');
         const syncStatus = document.getElementById('syncStatus');
         
-        // Date Display
         const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
 
         let currentCount = 0;
 
-        // Initialize from Local Storage first
         if(localStorage.getItem('radhaJapCount')) {
             currentCount = parseInt(localStorage.getItem('radhaJapCount'));
             updateDisplays();
@@ -281,12 +255,10 @@
         }
 
         function updateDisplays() {
-            // Add commas for large numbers (e.g., 12,345)
             countDisplay.innerText = currentCount.toLocaleString('en-IN');
             progressCount.innerText = currentCount;
         }
 
-        // Firebase Sync
         if (counterRef) {
             onSnapshot(counterRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -308,7 +280,6 @@
             }
         }
 
-        // Tap Event
         tapBtn.addEventListener('click', () => {
             currentCount++;
             updateDisplays();
@@ -316,10 +287,9 @@
             
             if(isCloudSynced) updateCloud(currentCount);
 
-            if (navigator.vibrate) navigator.vibrate([20, 30, 20]); // Realistic mala bead feel
+            if (navigator.vibrate) navigator.vibrate([20, 30, 20]);
         });
 
-        // Reset Event
         resetBtn.addEventListener('click', () => {
             if(confirm("क्या आप सच में काउंटर को शून्य (0) करना चाहते हैं?")) {
                 currentCount = 0;
