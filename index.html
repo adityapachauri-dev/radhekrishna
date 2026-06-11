@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- Mobile App Meta Tags -->
     <meta name="theme-color" content="#ff9a44">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <title>Shree Radha Jap Counter (Premium)</title>
+    <title>Shree Radha Jap Counter</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Yatra+One&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: 'Poppins', sans-serif;
-            /* Animated Divine Gradient Background */
             background: linear-gradient(-45deg, #ff9a44, #fc6076, #ffecd2, #fcb69f);
             background-size: 400% 400%;
             animation: divineGlow 15s ease infinite;
@@ -26,6 +24,7 @@
             justify-content: center;
             color: #4a3000;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
         @keyframes divineGlow {
@@ -41,31 +40,10 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            /* Glassmorphism effect over the gradient */
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
             box-shadow: 0 0 30px rgba(0,0,0,0.15);
             overflow: hidden;
-        }
-
-        /* Floating Light Particles */
-        .light-particle {
-            position: absolute;
-            bottom: -20px;
-            width: 10px; height: 10px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
-            animation: floatUp linear infinite;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
         }
 
         .top-bar {
@@ -76,10 +54,7 @@
             text-align: center;
             font-family: 'Yatra One', cursive;
             font-size: 1.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
+            display: flex; justify-content: center; align-items: center; gap: 15px;
             border-bottom: 2px solid rgba(255, 215, 0, 0.5);
             z-index: 10;
         }
@@ -88,289 +63,220 @@
             margin: 15px auto;
             background: rgba(255, 255, 255, 0.6);
             border: 1px solid rgba(212, 175, 55, 0.5);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            z-index: 10;
+            padding: 8px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10;
         }
 
         .main-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .deco-lotus { position: absolute; font-size: 2.5rem; z-index: 0; opacity: 0.8; animation: pulse 3s infinite alternate; }
-        .lotus-1 { left: 20px; top: 10%; }
-        .lotus-2 { right: 20px; top: 10%; }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.1); opacity: 1; }
+            flex-grow: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: relative; z-index: 10;
         }
 
         .counter-box {
-            text-align: center;
-            z-index: 10;
-            margin-bottom: 40px;
+            text-align: center; z-index: 10; margin-bottom: 40px;
             background: rgba(255, 255, 255, 0.85);
-            border: 2px solid rgba(212, 175, 55, 0.6);
-            border-radius: 25px;
-            padding: 20px 40px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 2px solid rgba(212, 175, 55, 0.6); border-radius: 25px;
+            padding: 20px 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
         
         .counter-box h2 { font-size: 1.1rem; font-weight: 600; color: #5b3e18; margin-bottom: 5px; }
-        .counter-box .count { font-size: 4.5rem; font-weight: 700; color: #d35400; font-family: 'Poppins', sans-serif; line-height: 1; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
-        .counter-box .mala-count { font-size: 1.2rem; font-weight: 600; color: #8e44ad; margin-top: 10px; background: #f3e5f5; padding: 5px 15px; border-radius: 20px; display: inline-block;}
+        
+        .count { 
+            font-size: 4.5rem; font-weight: 700; color: #d35400; 
+            font-family: 'Poppins', sans-serif; line-height: 1; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease-out;
+        }
+        
+        .pop-anim { animation: countPop 0.2s ease-out; }
+        @keyframes countPop { 0% { transform: scale(1); } 50% { transform: scale(1.2); color: #e67e22; } 100% { transform: scale(1); } }
+
+        .mala-count { font-size: 1.2rem; font-weight: 600; color: #8e44ad; margin-top: 10px; background: #f3e5f5; padding: 5px 15px; border-radius: 20px; display: inline-block;}
 
         .mala-ring {
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
+            width: 280px; height: 280px; border-radius: 50%;
             border: 15px dotted rgba(139, 69, 19, 0.6); 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(5px);
-            z-index: 10;
-            animation: spinMala 60s linear infinite;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px);
+            z-index: 10; animation: spinMala 60s linear infinite;
         }
 
         @keyframes spinMala { 100% { transform: rotate(360deg); } }
 
         .gold-btn {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
+            width: 180px; height: 180px; border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #fff5ba, #f6d365, #fda085);
             border: 4px solid #fff;
             box-shadow: inset 0 -8px 15px rgba(0,0,0,0.2), 0 15px 25px rgba(0,0,0,0.2);
-            color: #d35400;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-            font-size: 2.5rem;
-            font-weight: 600;
-            font-family: 'Yatra One', cursive;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.1s;
-            position: absolute; /* To stay fixed inside rotating ring */
-            z-index: 20;
+            color: #d35400; text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            font-size: 2.5rem; font-weight: 600; font-family: 'Yatra One', cursive;
+            cursor: pointer; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: absolute; z-index: 20;
             overflow: hidden;
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
         }
 
         .gold-btn:active {
-            transform: scale(0.94);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.2);
+            transform: scale(0.92);
+            box-shadow: inset 0 4px 15px rgba(0,0,0,0.5), 0 5px 10px rgba(0,0,0,0.2);
         }
 
-        /* Ripple Effect */
+        .floating-radha {
+            position: absolute; color: #c0392b; font-size: 1.1rem;
+            font-family: 'Yatra One', cursive; font-weight: bold; text-align: center;
+            width: 250px; pointer-events: none; z-index: 100; text-shadow: 1px 1px 2px #fff;
+            animation: floatTextAnim 1.2s ease-out forwards;
+        }
+
+        @keyframes floatTextAnim {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.1); opacity: 0; }
+        }
+
         .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.7);
-            transform: scale(0);
-            animation: rippleAnim 0.6s linear;
-            pointer-events: none;
+            position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
+            transform: scale(0); animation: rippleAnim 0.5s linear; pointer-events: none;
         }
+        @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
-        @keyframes rippleAnim {
-            to { transform: scale(4); opacity: 0; }
+        /* Error Toast Notification */
+        .error-toast {
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #e74c3c; color: white; padding: 10px 20px; border-radius: 8px;
+            font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000; display: none; width: 90%; text-align: center;
         }
 
         .bottom-nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            color: #5b3e18;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.5);
-            font-size: 0.85rem;
-            z-index: 10;
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px);
+            color: #5b3e18; padding: 15px 20px; display: flex; justify-content: space-between;
+            align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.5); font-size: 0.85rem; z-index: 10;
         }
-        
-        .progress-text { text-align: center; }
-
     </style>
 </head>
 <body>
 
+    <!-- 🎵 यहाँ ऑडियो फाइल लोड होगी -->
+    <audio id="maharajJiSound" src="radha_naam.mp3" preload="auto"></audio>
+
     <div class="app-container" id="appContainer">
         
-        <div class="top-bar">
-            🦚 श्री राधा 🦚
-        </div>
+        <!-- Error Message Box -->
+        <div id="errorToast" class="error-toast">⚠️ ऑडियो फाइल (radha_naam.mp3) नहीं मिली! कृपया इसे अपलोड करें।</div>
 
-        <div class="status-pill">
-            <span id="syncStatus">✨ आत्मिक शांति</span>
-        </div>
+        <div class="top-bar">🦚 श्री राधा 🦚</div>
+        <div class="status-pill"><span id="syncStatus">✨ आत्मिक शांति</span></div>
 
         <div class="main-area">
-            <div class="deco-lotus lotus-1">🪷</div>
-            <div class="deco-lotus lotus-2">🪷</div>
-
             <div class="counter-box">
-                <h2>कुल राधा नाम</h2>
+                <h2>कुल नाम जाप</h2>
                 <div class="count" id="countDisplay">0</div>
                 <div class="mala-count">माला: <span id="malaDisplay">0</span></div>
             </div>
 
-            <!-- Wrapper so button doesn't spin with the ring -->
             <div style="position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center;">
                 <div class="mala-ring"></div>
-                <button class="gold-btn" id="tapBtn">राधा</button>
+                <button class="gold-btn" id="tapBtn">जाप</button>
             </div>
-            
         </div>
 
         <div class="bottom-nav">
             <span>✨</span>
-            <div class="progress-text">
-                <strong id="dateDisplay"></strong>
-            </div>
+            <strong id="dateDisplay"></strong>
             <span>✨</span>
         </div>
-
     </div>
 
     <script>
-        // Set Today's Date
         const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('hi-IN', dateOptions);
 
-        // Elements
         const countDisplay = document.getElementById('countDisplay');
         const malaDisplay = document.getElementById('malaDisplay');
         const tapBtn = document.getElementById('tapBtn');
-        const appContainer = document.getElementById('appContainer');
+        const maharajJiAudio = document.getElementById('maharajJiSound');
+        const errorToast = document.getElementById('errorToast');
 
-        let currentCount = 0;
-
-        // Load saved count
-        if(localStorage.getItem('radhaJapCount')) {
-            currentCount = parseInt(localStorage.getItem('radhaJapCount'));
-            updateDisplays();
-        }
-
-        // Web Audio API for Divine Chime (No external file needed)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playDivineChime() {
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            // Bell like sound
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
-            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 2); 
-            
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5);
-            
-            osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 2.5);
-        }
+        let currentCount = parseInt(localStorage.getItem('radhaJapCount')) || 0;
 
         function updateDisplays() {
             countDisplay.innerText = currentCount.toLocaleString('en-IN');
-            // Calculate Malas (1 Mala = 108 Japs)
-            let malasCompleted = Math.floor(currentCount / 108);
-            malaDisplay.innerText = malasCompleted.toLocaleString('en-IN');
+            malaDisplay.innerText = Math.floor(currentCount / 108).toLocaleString('en-IN');
+        }
+        updateDisplays();
+
+        // 108 जाप पर घंटी
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playDivineChime() {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 2); 
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5);
+            osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 2.5);
         }
 
-        // Tap Event
-        tapBtn.addEventListener('click', function(e) {
+        tapBtn.addEventListener('pointerdown', function(e) {
+            e.preventDefault();
+            
+            // 1. Counter Update
             currentCount++;
-            updateDisplays();
             localStorage.setItem('radhaJapCount', currentCount);
+            updateDisplays();
+            countDisplay.classList.remove('pop-anim');
+            void countDisplay.offsetWidth; 
+            countDisplay.classList.add('pop-anim');
 
-            // Play Chime every 108 counts
-            if(currentCount > 0 && currentCount % 108 === 0) {
-                playDivineChime();
-                if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]); // Special vibration for mala completion
-            } else {
-                if (navigator.vibrate) navigator.vibrate([20]); // Normal subtle vibration
+            // 2. Play Maharaj Ji Audio (With strict error checking)
+            maharajJiAudio.currentTime = 0; 
+            let playPromise = maharajJiAudio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    // अगर फाइल नहीं मिली, तो लाल रंग का अलर्ट दिखेगा
+                    errorToast.style.display = 'block';
+                    setTimeout(() => { errorToast.style.display = 'none'; }, 3000);
+                    console.log("Audio Error:", error);
+                });
             }
 
-            // Ripple Effect Logic
+            // 3. 108 Completion Chime & Vibrate
+            if(currentCount > 0 && currentCount % 108 === 0) {
+                playDivineChime();
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+            } else {
+                if (navigator.vibrate) navigator.vibrate([15]);
+            }
+
+            // 4. Visual Effects (Ripple & Floating Text)
             const circle = document.createElement('span');
             circle.classList.add('ripple');
             const diameter = Math.max(tapBtn.clientWidth, tapBtn.clientHeight);
             const radius = diameter / 2;
-
-            // Get exact click position
             const rect = tapBtn.getBoundingClientRect();
-            // Fallback for touch vs mouse
             const clientX = e.clientX || (e.touches && e.touches[0].clientX) || rect.left + radius;
             const clientY = e.clientY || (e.touches && e.touches[0].clientY) || rect.top + radius;
-
             circle.style.width = circle.style.height = `${diameter}px`;
             circle.style.left = `${clientX - rect.left - radius}px`;
             circle.style.top = `${clientY - rect.top - radius}px`;
-
             tapBtn.appendChild(circle);
+            setTimeout(() => circle.remove(), 500);
 
-            // Remove ripple after animation
-            setTimeout(() => {
-                circle.remove();
-            }, 600);
+            const floatingText = document.createElement('div');
+            floatingText.classList.add('floating-radha');
+            floatingText.innerText = "राधा राधा कृष्ण कृष्ण हरि हरि";
+            floatingText.style.left = `${clientX - 125}px`; 
+            floatingText.style.top = `${clientY - 40}px`;
+            document.body.appendChild(floatingText);
+            setTimeout(() => floatingText.remove(), 1200); 
         });
-
-        // Add Floating Particles Randomly
-        function createParticles() {
-            for(let i=0; i<15; i++) {
-                setTimeout(() => {
-                    let particle = document.createElement('div');
-                    particle.classList.add('light-particle');
-                    particle.style.left = Math.random() * 100 + 'vw';
-                    particle.style.animationDuration = (Math.random() * 5 + 5) + 's'; // 5 to 10 seconds
-                    appContainer.appendChild(particle);
-                    
-                    // remove and recreate to keep loop infinite but clean DOM
-                    setTimeout(() => {
-                        particle.remove();
-                        createSingleParticle();
-                    }, 10000);
-                }, i * 600);
-            }
-        }
-
-        function createSingleParticle() {
-            let particle = document.createElement('div');
-            particle.classList.add('light-particle');
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            appContainer.appendChild(particle);
-            setTimeout(() => {
-                particle.remove();
-                createSingleParticle();
-            }, 10000);
-        }
-
-        createParticles();
 
     </script>
 </body>
