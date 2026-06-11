@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <meta name="theme-color" content="#5b3e18">
+    <!-- Mobile App Meta Tags -->
+    <meta name="theme-color" content="#ff9a44">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,12 +17,21 @@
         
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to bottom, #fff5e1, #f2e2c4);
+            /* Animated Divine Gradient Background */
+            background: linear-gradient(-45deg, #ff9a44, #fc6076, #ffecd2, #fcb69f);
+            background-size: 400% 400%;
+            animation: divineGlow 15s ease infinite;
             height: 100vh;
             display: flex;
             justify-content: center;
             color: #4a3000;
             overflow: hidden;
+        }
+
+        @keyframes divineGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .app-container {
@@ -31,12 +41,36 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            background: radial-gradient(circle at center, #fffdf8, #f5e4c6);
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            /* Glassmorphism effect over the gradient */
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        /* Floating Light Particles */
+        .light-particle {
+            position: absolute;
+            bottom: -20px;
+            width: 10px; height: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
+            animation: floatUp linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
         }
 
         .top-bar {
-            background: #5b3e18;
+            background: rgba(91, 62, 24, 0.8);
+            backdrop-filter: blur(5px);
             color: #ffd700;
             padding: 15px;
             text-align: center;
@@ -46,14 +80,14 @@
             justify-content: center;
             align-items: center;
             gap: 15px;
-            border-bottom: 3px solid #ffd700;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-bottom: 2px solid rgba(255, 215, 0, 0.5);
+            z-index: 10;
         }
 
         .status-pill {
             margin: 15px auto;
-            background: rgba(255, 255, 255, 0.7);
-            border: 2px solid #d4af37;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.5);
             padding: 8px 20px;
             border-radius: 30px;
             font-size: 0.85rem;
@@ -61,7 +95,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             z-index: 10;
         }
 
@@ -72,53 +106,61 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            z-index: 10;
         }
 
-        .deco-peacock { position: absolute; font-size: 4rem; opacity: 0.9; z-index: 0; }
-        .peacock-left { left: 10px; top: 30%; transform: scaleX(-1); }
-        .peacock-right { right: 10px; top: 30%; }
-        
-        .deco-lotus { position: absolute; font-size: 3rem; z-index: 0; }
-        .lotus-1 { left: 30px; bottom: 20%; }
-        .lotus-2 { right: 30px; bottom: 20%; }
+        .deco-lotus { position: absolute; font-size: 2.5rem; z-index: 0; opacity: 0.8; animation: pulse 3s infinite alternate; }
+        .lotus-1 { left: 20px; top: 10%; }
+        .lotus-2 { right: 20px; top: 10%; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
 
         .counter-box {
             text-align: center;
             z-index: 10;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            border: 3px solid #d4af37;
-            border-radius: 20px;
-            padding: 15px 40px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 0 0 10px rgba(212, 175, 55, 0.2);
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 2px solid rgba(212, 175, 55, 0.6);
+            border-radius: 25px;
+            padding: 20px 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
-        .counter-box h2 { font-size: 1.2rem; font-weight: 600; color: #5b3e18; }
-        .counter-box .count { font-size: 4rem; font-weight: 700; color: #a67c00; font-family: 'Poppins', sans-serif; }
+        
+        .counter-box h2 { font-size: 1.1rem; font-weight: 600; color: #5b3e18; margin-bottom: 5px; }
+        .counter-box .count { font-size: 4.5rem; font-weight: 700; color: #d35400; font-family: 'Poppins', sans-serif; line-height: 1; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .counter-box .mala-count { font-size: 1.2rem; font-weight: 600; color: #8e44ad; margin-top: 10px; background: #f3e5f5; padding: 5px 15px; border-radius: 20px; display: inline-block;}
 
         .mala-ring {
-            width: 260px;
-            height: 260px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            border: 22px dotted #8b4513; 
+            border: 15px dotted rgba(139, 69, 19, 0.6); 
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 0 15px rgba(0,0,0,0.3);
-            background: radial-gradient(circle, #fcf3df 0%, #e8d0a9 100%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
             z-index: 10;
+            animation: spinMala 60s linear infinite;
         }
 
+        @keyframes spinMala { 100% { transform: rotate(360deg); } }
+
         .gold-btn {
-            width: 170px;
-            height: 170px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fff0a8, #d4af37, #997a00);
-            border: 4px solid #f8e473;
-            box-shadow: inset 0 -8px 15px rgba(0,0,0,0.4), 0 10px 20px rgba(0,0,0,0.5);
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-            font-size: 2.2rem;
+            background: radial-gradient(circle at 30% 30%, #fff5ba, #f6d365, #fda085);
+            border: 4px solid #fff;
+            box-shadow: inset 0 -8px 15px rgba(0,0,0,0.2), 0 15px 25px rgba(0,0,0,0.2);
+            color: #d35400;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            font-size: 2.5rem;
             font-weight: 600;
             font-family: 'Yatra One', cursive;
             cursor: pointer;
@@ -126,178 +168,210 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: transform 0.1s, box-shadow 0.1s;
-            position: relative;
+            transition: transform 0.1s;
+            position: absolute; /* To stay fixed inside rotating ring */
+            z-index: 20;
+            overflow: hidden;
         }
 
         .gold-btn:active {
-            transform: scale(0.96);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.6), 0 5px 10px rgba(0,0,0,0.4);
+            transform: scale(0.94);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.2);
         }
 
-        .gem {
-            width: 25px; height: 25px;
-            background: radial-gradient(circle at 30% 30%, #00f0ff, #006d77);
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
             border-radius: 50%;
-            margin: 5px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 -2px 5px rgba(0,0,0,0.3);
-            border: 2px solid #fff;
+            background: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: rippleAnim 0.6s linear;
+            pointer-events: none;
         }
 
-        .reset-btn {
-            margin-top: 30px;
-            background: #006d77;
-            color: white;
-            border: 2px solid #d4af37;
-            padding: 10px 30px;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
         }
 
         .bottom-nav {
-            background: #004d55;
-            color: #d4af37;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: #5b3e18;
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 3px solid #d4af37;
-            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            z-index: 10;
         }
-        .nav-icons { font-size: 1.5rem; cursor: pointer; }
+        
         .progress-text { text-align: center; }
 
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <div class="app-container" id="appContainer">
         
         <div class="top-bar">
-            🦚 श्री राधा जप काउंटर 🦚
+            🦚 श्री राधा 🦚
         </div>
 
         <div class="status-pill">
-            <span>👤 User Profile |</span>
-            <span id="syncStatus">⏳ Connecting...</span>
+            <span id="syncStatus">✨ आत्मिक शांति</span>
         </div>
 
         <div class="main-area">
-            <div class="deco-peacock peacock-left">🦚</div>
-            <div class="deco-peacock peacock-right">🦚</div>
             <div class="deco-lotus lotus-1">🪷</div>
             <div class="deco-lotus lotus-2">🪷</div>
 
             <div class="counter-box">
-                <h2>राधा नाम जाप<br>Total Count</h2>
+                <h2>कुल राधा नाम</h2>
                 <div class="count" id="countDisplay">0</div>
+                <div class="mala-count">माला: <span id="malaDisplay">0</span></div>
             </div>
 
-            <div class="mala-ring">
-                <button class="gold-btn" id="tapBtn">
-                    JAP
-                    <div class="gem"></div>
-                    राधा
-                </button>
+            <!-- Wrapper so button doesn't spin with the ring -->
+            <div style="position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center;">
+                <div class="mala-ring"></div>
+                <button class="gold-btn" id="tapBtn">राधा</button>
             </div>
-
-            <button class="reset-btn" id="resetBtn">🦚 Reset Counter 🦚</button>
+            
         </div>
 
         <div class="bottom-nav">
-            <span class="nav-icons">🏠</span>
+            <span>✨</span>
             <div class="progress-text">
-                <strong id="dateDisplay"></strong><br>
-                Progress: <span id="progressCount">0</span> / 20000
+                <strong id="dateDisplay"></strong>
             </div>
-            <span class="nav-icons">⚙️</span>
+            <span>✨</span>
         </div>
 
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {};
-
-        let db = null;
-        let counterRef = null;
-        let isCloudSynced = false;
-
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            counterRef = doc(db, "jap_data", "my_personal_counter");
-        } catch (e) {
-            console.log("Firebase not configured yet. Using local storage.");
-        }
-
-        const countDisplay = document.getElementById('countDisplay');
-        const progressCount = document.getElementById('progressCount');
-        const tapBtn = document.getElementById('tapBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const syncStatus = document.getElementById('syncStatus');
-        
+    <script>
+        // Set Today's Date
         const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('en-GB', dateOptions);
+        document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('hi-IN', dateOptions);
+
+        // Elements
+        const countDisplay = document.getElementById('countDisplay');
+        const malaDisplay = document.getElementById('malaDisplay');
+        const tapBtn = document.getElementById('tapBtn');
+        const appContainer = document.getElementById('appContainer');
 
         let currentCount = 0;
 
+        // Load saved count
         if(localStorage.getItem('radhaJapCount')) {
             currentCount = parseInt(localStorage.getItem('radhaJapCount'));
             updateDisplays();
-            syncStatus.innerText = "💾 Local Mode";
+        }
+
+        // Web Audio API for Divine Chime (No external file needed)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playDivineChime() {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // Bell like sound
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 2); 
+            
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5);
+            
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 2.5);
         }
 
         function updateDisplays() {
             countDisplay.innerText = currentCount.toLocaleString('en-IN');
-            progressCount.innerText = currentCount;
+            // Calculate Malas (1 Mala = 108 Japs)
+            let malasCompleted = Math.floor(currentCount / 108);
+            malaDisplay.innerText = malasCompleted.toLocaleString('en-IN');
         }
 
-        if (counterRef) {
-            onSnapshot(counterRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    currentCount = docSnap.data().count;
-                }
-                updateDisplays();
-                syncStatus.innerText = "☁️ Synced";
-                isCloudSynced = true;
-            }, (error) => {
-                syncStatus.innerText = "⚠️ Offline";
-            });
-        }
-
-        async function updateCloud(newCount) {
-            if(counterRef) {
-                try {
-                    await setDoc(counterRef, { count: newCount, lastUpdated: new Date() });
-                } catch (error) { console.error("Cloud Error", error); }
-            }
-        }
-
-        tapBtn.addEventListener('click', () => {
+        // Tap Event
+        tapBtn.addEventListener('click', function(e) {
             currentCount++;
             updateDisplays();
             localStorage.setItem('radhaJapCount', currentCount);
-            
-            if(isCloudSynced) updateCloud(currentCount);
 
-            if (navigator.vibrate) navigator.vibrate([20, 30, 20]);
-        });
-
-        resetBtn.addEventListener('click', () => {
-            if(confirm("क्या आप सच में काउंटर को शून्य (0) करना चाहते हैं?")) {
-                currentCount = 0;
-                updateDisplays();
-                localStorage.setItem('radhaJapCount', 0);
-                if(isCloudSynced) updateCloud(0);
+            // Play Chime every 108 counts
+            if(currentCount > 0 && currentCount % 108 === 0) {
+                playDivineChime();
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]); // Special vibration for mala completion
+            } else {
+                if (navigator.vibrate) navigator.vibrate([20]); // Normal subtle vibration
             }
+
+            // Ripple Effect Logic
+            const circle = document.createElement('span');
+            circle.classList.add('ripple');
+            const diameter = Math.max(tapBtn.clientWidth, tapBtn.clientHeight);
+            const radius = diameter / 2;
+
+            // Get exact click position
+            const rect = tapBtn.getBoundingClientRect();
+            // Fallback for touch vs mouse
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX) || rect.left + radius;
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY) || rect.top + radius;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${clientX - rect.left - radius}px`;
+            circle.style.top = `${clientY - rect.top - radius}px`;
+
+            tapBtn.appendChild(circle);
+
+            // Remove ripple after animation
+            setTimeout(() => {
+                circle.remove();
+            }, 600);
         });
+
+        // Add Floating Particles Randomly
+        function createParticles() {
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    let particle = document.createElement('div');
+                    particle.classList.add('light-particle');
+                    particle.style.left = Math.random() * 100 + 'vw';
+                    particle.style.animationDuration = (Math.random() * 5 + 5) + 's'; // 5 to 10 seconds
+                    appContainer.appendChild(particle);
+                    
+                    // remove and recreate to keep loop infinite but clean DOM
+                    setTimeout(() => {
+                        particle.remove();
+                        createSingleParticle();
+                    }, 10000);
+                }, i * 600);
+            }
+        }
+
+        function createSingleParticle() {
+            let particle = document.createElement('div');
+            particle.classList.add('light-particle');
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            appContainer.appendChild(particle);
+            setTimeout(() => {
+                particle.remove();
+                createSingleParticle();
+            }, 10000);
+        }
+
+        createParticles();
+
     </script>
 </body>
 </html>
