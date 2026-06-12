@@ -8,6 +8,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Radha Jap">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3389/3389081.png">
     
     <title>Shree Radha Jap Counter</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Yatra+One&display=swap" rel="stylesheet">
@@ -141,7 +143,6 @@
         }
         @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
-        /* Toasts */
         .toast-msg {
             position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
             padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; 
@@ -150,8 +151,8 @@
         }
         .error-toast { background: #e74c3c; }
         .success-toast { background: #2ecc71; }
+        .cal-toast { background: #3498db; }
 
-        /* Reminder Modal */
         .reminder-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
@@ -180,9 +181,10 @@
         }
 
         .notify-icon {
-            font-size: 1.3rem; cursor: pointer; transition: transform 0.2s;
+            font-size: 1.3rem; cursor: pointer; transition: transform 0.2s; padding: 5px;
         }
         .notify-icon:active { transform: scale(0.8); }
+        .nav-left { display: flex; gap: 15px; }
 
     </style>
 </head>
@@ -194,6 +196,7 @@
         
         <div id="errorToast" class="toast-msg error-toast">⚠️ ऑडियो फाइल (radha_naam.mp3) नहीं मिली!</div>
         <div id="reminderToast" class="toast-msg success-toast">🔔 नोटिफिकेशन चालू हो गए हैं!</div>
+        <div id="calToast" class="toast-msg cal-toast">📅 कैलेंडर इवेंट डाउनलोड हो गया!</div>
 
         <div id="reminderOverlay" class="reminder-overlay">
             <div class="reminder-box">
@@ -220,8 +223,10 @@
         </div>
 
         <div class="bottom-nav">
-            <!-- नया घंटी बटन नोटिफिकेशन चालू करने के लिए -->
-            <span id="notifyBtn" class="notify-icon" title="नोटिफिकेशन चालू करें">🔔</span>
+            <div class="nav-left">
+                <span id="notifyBtn" class="notify-icon" title="नोटिफिकेशन चालू करें">🔔</span>
+                <span id="calBtn" class="notify-icon" title="Apple Calendar में जोड़ें">📅</span>
+            </div>
             <strong id="dateDisplay"></strong>
             <span>✨</span>
         </div>
@@ -235,9 +240,11 @@
         const malaDisplay = document.getElementById('malaDisplay');
         const tapBtn = document.getElementById('tapBtn');
         const notifyBtn = document.getElementById('notifyBtn');
+        const calBtn = document.getElementById('calBtn');
         const maharajJiAudio = document.getElementById('maharajJiSound');
         const errorToast = document.getElementById('errorToast');
         const reminderToast = document.getElementById('reminderToast');
+        const calToast = document.getElementById('calToast');
         const reminderOverlay = document.getElementById('reminderOverlay');
 
         let currentCount = parseInt(localStorage.getItem('radhaJapCount')) || 0;
@@ -265,7 +272,52 @@
             osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 2.5);
         }
 
-        // --- EXPLICIT NOTIFICATION PERMISSION ---
+        // --- APPLE CALENDAR (.ICS) GENERATION ---
+        calBtn.addEventListener('click', () => {
+            const now = new Date();
+            // अगले दिन सुबह 6 बजे का डिफ़ॉल्ट टाइम सेट करें
+            now.setDate(now.getDate() + 1);
+            now.setHours(6, 0, 0, 0);
+
+            // UTC Format YYYYMMDDTHHMMSSZ
+            const startStr = now.toISOString().replace(/-|:|\.\d+/g, '');
+            now.setHours(7, 0, 0, 0); // 1 घंटे का इवेंट
+            const endStr = now.toISOString().replace(/-|:|\.\d+/g, '');
+
+            const icsData = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Shree Radha Jap//iOS App//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+SUMMARY:🦚 श्री राधा नाम जाप
+DTSTART:${startStr}
+DTEND:${endStr}
+RRULE:FREQ=DAILY
+DESCRIPTION:राधा रानी और बिहारी जी आपका स्मरण कर रहे हैं। अपना कुछ समय निकालकर नाम जाप करें।
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Radha_Jap_Reminder.ics';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            calToast.style.display = 'block';
+            setTimeout(() => { calToast.style.display = 'none'; }, 3000);
+        });
+
         notifyBtn.addEventListener('click', () => {
             if (!("Notification" in window)) {
                 alert("आपका ब्राउज़र नोटिफिकेशन सपोर्ट नहीं करता है।");
@@ -278,7 +330,6 @@
                         body: "आपके ब्राउज़र नोटिफिकेशन सफलतापूर्वक चालू हो गए हैं!",
                         icon: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
                     });
-                    reminderToast.innerText = "🔔 नोटिफिकेशन चालू हो गए हैं!";
                     reminderToast.style.display = 'block';
                     setTimeout(() => { reminderToast.style.display = 'none'; }, 3000);
                 } else {
@@ -287,16 +338,13 @@
             });
         });
 
-        // --- HOURLY REMINDER LOGIC ---
         let reminderSet = false;
         function setupHourlyReminder() {
             if (reminderSet) return;
             reminderSet = true;
             
-            // 1 Hour Interval (3600000 ms)
             setInterval(() => {
                 reminderOverlay.style.display = 'flex';
-                
                 if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
                 
                 if ("Notification" in window && Notification.permission === "granted") {
@@ -315,14 +363,12 @@
         tapBtn.addEventListener('pointerdown', function(e) {
             e.preventDefault();
             
-            // Initialize Audio Context and Reminder on first tap
             if (!isAudioCtxInitialized) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 isAudioCtxInitialized = true;
                 setupHourlyReminder(); 
             }
             
-            // 1. Counter Update
             currentCount++;
             localStorage.setItem('radhaJapCount', currentCount);
             updateDisplays();
@@ -330,7 +376,6 @@
             void countDisplay.offsetWidth; 
             countDisplay.classList.add('pop-anim');
 
-            // 2. Play Maharaj Ji Audio
             maharajJiAudio.currentTime = 0; 
             let playPromise = maharajJiAudio.play();
             
@@ -342,12 +387,10 @@
                 });
             }
 
-            // 3. 108 Completion Chime, Vibrate & NOTIFICATION
             if(currentCount > 0 && currentCount % 108 === 0) {
                 playDivineChime();
                 if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
                 
-                // माला पूरी होने का नोटिफिकेशन
                 if ("Notification" in window && Notification.permission === "granted") {
                     new Notification("📿 एक माला पूर्ण", {
                         body: `बधाई हो! आपने ${Math.floor(currentCount / 108)} माला पूर्ण कर ली हैं। राधा रानी कृपा करें।`,
@@ -358,7 +401,6 @@
                 if (navigator.vibrate) navigator.vibrate([15]);
             }
 
-            // 4. Visual Effects (Ripple & Floating Text)
             const circle = document.createElement('span');
             circle.classList.add('ripple');
             const diameter = Math.max(tapBtn.clientWidth, tapBtn.clientHeight);
@@ -372,7 +414,6 @@
             tapBtn.appendChild(circle);
             setTimeout(() => circle.remove(), 500);
 
-            // Original Text Restored
             const floatingText = document.createElement('div');
             floatingText.classList.add('floating-radha');
             floatingText.innerText = "राधा राधा कृष्ण कृष्ण हरि हरि";
