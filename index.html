@@ -141,12 +141,36 @@
         }
         @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
-        /* Error Toast Notification */
-        .error-toast {
+        /* Toasts */
+        .toast-msg {
             position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-            background: #e74c3c; color: white; padding: 10px 20px; border-radius: 8px;
-            font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 1000; display: none; width: 90%; text-align: center;
+            padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; display: none; width: 90%; text-align: center;
+            color: white;
+        }
+        .error-toast { background: #e74c3c; }
+        .success-toast { background: #2ecc71; }
+
+        /* Reminder Modal */
+        .reminder-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .reminder-box {
+            background: linear-gradient(135deg, #fff9e6, #ffe4b5);
+            padding: 30px; border-radius: 20px; text-align: center;
+            width: 85%; border: 4px solid #006400; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .reminder-box h3 { font-family: 'Yatra One', cursive; color: #b06ab3; font-size: 1.8rem; margin-bottom: 10px; }
+        .reminder-box p { font-size: 1.1rem; color: #5b3e18; margin-bottom: 20px; font-weight: 600; }
+        .reminder-btn {
+            background: linear-gradient(90deg, #b06ab3, #4568dc); color: #fff; border: none; padding: 10px 30px;
+            font-size: 1.1rem; border-radius: 30px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-family: 'Poppins', sans-serif;
         }
 
         .bottom-nav {
@@ -154,17 +178,30 @@
             color: #5b3e18; padding: 15px 20px; display: flex; justify-content: space-between;
             align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.5); font-size: 0.85rem; z-index: 10;
         }
+
+        .notify-icon {
+            font-size: 1.3rem; cursor: pointer; transition: transform 0.2s;
+        }
+        .notify-icon:active { transform: scale(0.8); }
+
     </style>
 </head>
 <body>
 
-    <!-- 🎵 यहाँ ऑडियो फाइल लोड होगी -->
     <audio id="maharajJiSound" src="radha_naam.mp3" preload="auto"></audio>
 
     <div class="app-container" id="appContainer">
         
-        <!-- Error Message Box -->
-        <div id="errorToast" class="error-toast">⚠️ ऑडियो फाइल (radha_naam.mp3) नहीं मिली! कृपया इसे अपलोड करें।</div>
+        <div id="errorToast" class="toast-msg error-toast">⚠️ ऑडियो फाइल (radha_naam.mp3) नहीं मिली!</div>
+        <div id="reminderToast" class="toast-msg success-toast">🔔 नोटिफिकेशन चालू हो गए हैं!</div>
+
+        <div id="reminderOverlay" class="reminder-overlay">
+            <div class="reminder-box">
+                <h3>🦚 श्री राधे 🦚</h3>
+                <p>राधा रानी और बिहारी जी आपका स्मरण कर रहे हैं।<br>कृपया कुछ समय निकालकर जाप करें।</p>
+                <button class="reminder-btn" onclick="closeReminder()">जय श्री कृष्णा</button>
+            </div>
+        </div>
 
         <div class="top-bar">🦚 श्री राधा 🦚</div>
         <div class="status-pill"><span id="syncStatus">✨ आत्मिक शांति</span></div>
@@ -183,7 +220,8 @@
         </div>
 
         <div class="bottom-nav">
-            <span>✨</span>
+            <!-- नया घंटी बटन नोटिफिकेशन चालू करने के लिए -->
+            <span id="notifyBtn" class="notify-icon" title="नोटिफिकेशन चालू करें">🔔</span>
             <strong id="dateDisplay"></strong>
             <span>✨</span>
         </div>
@@ -196,10 +234,15 @@
         const countDisplay = document.getElementById('countDisplay');
         const malaDisplay = document.getElementById('malaDisplay');
         const tapBtn = document.getElementById('tapBtn');
+        const notifyBtn = document.getElementById('notifyBtn');
         const maharajJiAudio = document.getElementById('maharajJiSound');
         const errorToast = document.getElementById('errorToast');
+        const reminderToast = document.getElementById('reminderToast');
+        const reminderOverlay = document.getElementById('reminderOverlay');
 
         let currentCount = parseInt(localStorage.getItem('radhaJapCount')) || 0;
+        let isAudioCtxInitialized = false;
+        let audioCtx;
 
         function updateDisplays() {
             countDisplay.innerText = currentCount.toLocaleString('en-IN');
@@ -207,9 +250,8 @@
         }
         updateDisplays();
 
-        // 108 जाप पर घंटी
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playDivineChime() {
+            if (!audioCtx) return;
             if(audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
@@ -223,8 +265,62 @@
             osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 2.5);
         }
 
+        // --- EXPLICIT NOTIFICATION PERMISSION ---
+        notifyBtn.addEventListener('click', () => {
+            if (!("Notification" in window)) {
+                alert("आपका ब्राउज़र नोटिफिकेशन सपोर्ट नहीं करता है।");
+                return;
+            }
+            
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("हरे कृष्ण! 🙏", {
+                        body: "आपके ब्राउज़र नोटिफिकेशन सफलतापूर्वक चालू हो गए हैं!",
+                        icon: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
+                    });
+                    reminderToast.innerText = "🔔 नोटिफिकेशन चालू हो गए हैं!";
+                    reminderToast.style.display = 'block';
+                    setTimeout(() => { reminderToast.style.display = 'none'; }, 3000);
+                } else {
+                    alert("आपने नोटिफिकेशन की अनुमति नहीं दी है। कृपया ब्राउज़र सेटिंग्स चेक करें।");
+                }
+            });
+        });
+
+        // --- HOURLY REMINDER LOGIC ---
+        let reminderSet = false;
+        function setupHourlyReminder() {
+            if (reminderSet) return;
+            reminderSet = true;
+            
+            // 1 Hour Interval (3600000 ms)
+            setInterval(() => {
+                reminderOverlay.style.display = 'flex';
+                
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
+                
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("🦚 श्री राधा जाप का समय 🦚", {
+                        body: "राधा रानी और बिहारी जी आपका स्मरण कर रहे हैं।",
+                        icon: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
+                    });
+                }
+            }, 3600000); 
+        }
+
+        function closeReminder() {
+            reminderOverlay.style.display = 'none';
+        }
+
         tapBtn.addEventListener('pointerdown', function(e) {
             e.preventDefault();
+            
+            // Initialize Audio Context and Reminder on first tap
+            if (!isAudioCtxInitialized) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                isAudioCtxInitialized = true;
+                setupHourlyReminder(); 
+            }
             
             // 1. Counter Update
             currentCount++;
@@ -234,23 +330,30 @@
             void countDisplay.offsetWidth; 
             countDisplay.classList.add('pop-anim');
 
-            // 2. Play Maharaj Ji Audio (With strict error checking)
+            // 2. Play Maharaj Ji Audio
             maharajJiAudio.currentTime = 0; 
             let playPromise = maharajJiAudio.play();
             
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    // अगर फाइल नहीं मिली, तो लाल रंग का अलर्ट दिखेगा
                     errorToast.style.display = 'block';
                     setTimeout(() => { errorToast.style.display = 'none'; }, 3000);
                     console.log("Audio Error:", error);
                 });
             }
 
-            // 3. 108 Completion Chime & Vibrate
+            // 3. 108 Completion Chime, Vibrate & NOTIFICATION
             if(currentCount > 0 && currentCount % 108 === 0) {
                 playDivineChime();
                 if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+                
+                // माला पूरी होने का नोटिफिकेशन
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("📿 एक माला पूर्ण", {
+                        body: `बधाई हो! आपने ${Math.floor(currentCount / 108)} माला पूर्ण कर ली हैं। राधा रानी कृपा करें।`,
+                        icon: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
+                    });
+                }
             } else {
                 if (navigator.vibrate) navigator.vibrate([15]);
             }
@@ -269,6 +372,7 @@
             tapBtn.appendChild(circle);
             setTimeout(() => circle.remove(), 500);
 
+            // Original Text Restored
             const floatingText = document.createElement('div');
             floatingText.classList.add('floating-radha');
             floatingText.innerText = "राधा राधा कृष्ण कृष्ण हरि हरि";
