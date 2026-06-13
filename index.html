@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <meta name="theme-color" content="#ff9a44">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,19 +11,21 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3389/3389081.png">
     
     <title>Shree Radha Jap Counter</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Yatra+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+    
     <style>
+        /* iOS Glassmorphism & Base Setup */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #ff9a44, #fc6076, #ffecd2, #fcb69f);
+            font-family: -apple-system, BlinkMacSystemFont, 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #fbc2eb, #a6c1ee, #ffecd2, #fcb69f);
             background-size: 400% 400%;
             animation: divineGlow 15s ease infinite;
             height: 100vh;
             display: flex;
             justify-content: center;
-            color: #4a3000;
+            color: #333;
             overflow: hidden;
             touch-action: manipulation;
         }
@@ -35,156 +36,212 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* Bubble Animation Effect */
+        .bubbles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bubble {
+            position: absolute;
+            bottom: -20px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: floatUp 10s infinite ease-in;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+
         .app-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 430px; /* Standard iOS Pro Max width */
             height: 100%;
             display: flex;
             flex-direction: column;
             position: relative;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
             overflow: hidden;
-        }
-
-        .top-bar {
-            background: rgba(91, 62, 24, 0.8);
-            backdrop-filter: blur(5px);
-            color: #ffd700;
-            padding: 15px;
-            text-align: center;
-            font-family: 'Yatra One', cursive;
-            font-size: 1.5rem;
-            display: flex; justify-content: center; align-items: center; gap: 15px;
-            border-bottom: 2px solid rgba(255, 215, 0, 0.5);
             z-index: 10;
         }
 
-        .status-pill {
+        /* Dynamic Island Style Top Bar */
+        .top-island {
             margin: 15px auto;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            padding: 8px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 40px;
+            font-family: 'Yatra One', cursive;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            z-index: 20;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
 
         .main-area {
-            flex-grow: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: relative; z-index: 10;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
         }
 
+        /* iOS Glass Card for Counter */
         .counter-box {
-            text-align: center; z-index: 10; margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.85);
-            border: 2px solid rgba(212, 175, 55, 0.6); border-radius: 25px;
-            padding: 20px 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            z-index: 10;
+            margin-bottom: 50px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 32px;
+            padding: 30px 50px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
         
-        .counter-box h2 { font-size: 1.1rem; font-weight: 600; color: #5b3e18; margin-bottom: 5px; }
+        .counter-box h2 { font-size: 1.1rem; font-weight: 500; color: #555; margin-bottom: 5px; letter-spacing: 1px; }
         
         .count { 
-            font-size: 4.5rem; font-weight: 700; color: #d35400; 
-            font-family: 'Poppins', sans-serif; line-height: 1; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.1s ease-out;
+            font-size: 5.5rem; font-weight: 700; color: #222; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1; 
+            text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .pop-anim { animation: countPop 0.2s ease-out; }
-        @keyframes countPop { 0% { transform: scale(1); } 50% { transform: scale(1.2); color: #e67e22; } 100% { transform: scale(1); } }
+        .pop-anim { animation: countPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes countPop { 0% { transform: scale(1); } 50% { transform: scale(1.15); color: #d35400; } 100% { transform: scale(1); } }
 
-        .mala-count { font-size: 1.2rem; font-weight: 600; color: #8e44ad; margin-top: 10px; background: #f3e5f5; padding: 5px 15px; border-radius: 20px; display: inline-block;}
-
-        .mala-ring {
-            width: 280px; height: 280px; border-radius: 50%;
-            border: 15px dotted rgba(139, 69, 19, 0.6); 
-            display: flex; align-items: center; justify-content: center;
-            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px);
-            z-index: 10; animation: spinMala 60s linear infinite;
+        .mala-count { 
+            font-size: 1.1rem; font-weight: 600; color: #4a4a4a; 
+            margin-top: 15px; background: rgba(255,255,255,0.6); 
+            padding: 8px 20px; border-radius: 20px; display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        @keyframes spinMala { 100% { transform: rotate(360deg); } }
-
-        .gold-btn {
-            width: 180px; height: 180px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fff5ba, #f6d365, #fda085);
-            border: 4px solid #fff;
-            box-shadow: inset 0 -8px 15px rgba(0,0,0,0.2), 0 15px 25px rgba(0,0,0,0.2);
-            color: #d35400; text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        /* Tap Button - Modern Soft 3D */
+        .tap-btn {
+            width: 200px; height: 200px; border-radius: 50%;
+            background: radial-gradient(145deg, #ffffff, #ffe4c4);
+            border: none;
+            box-shadow: 
+                20px 20px 60px rgba(0,0,0,0.1),
+                -20px -20px 60px rgba(255,255,255,0.8),
+                inset 0 0 0 rgba(255,255,255,0);
+            color: #d35400; 
             font-size: 2.5rem; font-weight: 600; font-family: 'Yatra One', cursive;
             cursor: pointer; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: absolute; z-index: 20;
+            align-items: center; justify-content: center; position: relative; z-index: 20;
             overflow: hidden;
-            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.15s ease;
             user-select: none;
         }
 
-        .gold-btn:active {
-            transform: scale(0.92);
-            box-shadow: inset 0 4px 15px rgba(0,0,0,0.5), 0 5px 10px rgba(0,0,0,0.2);
+        .tap-btn:active {
+            transform: scale(0.94);
+            box-shadow: 
+                10px 10px 30px rgba(0,0,0,0.1),
+                -10px -10px 30px rgba(255,255,255,0.8),
+                inset 10px 10px 20px rgba(0,0,0,0.05);
         }
 
+        /* Floating text effect */
         .floating-radha {
-            position: absolute; color: #c0392b; font-size: 1.1rem;
+            position: absolute; color: #e74c3c; font-size: 1.2rem;
             font-family: 'Yatra One', cursive; font-weight: bold; text-align: center;
-            width: 250px; pointer-events: none; z-index: 100; text-shadow: 1px 1px 2px #fff;
-            animation: floatTextAnim 1.2s ease-out forwards;
+            width: 250px; pointer-events: none; z-index: 100; text-shadow: 0 2px 10px rgba(255,255,255,0.9);
+            animation: floatTextAnim 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
         @keyframes floatTextAnim {
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1.1); opacity: 0; }
+            100% { transform: translateY(-120px) scale(1.1); opacity: 0; }
         }
 
-        .ripple {
-            position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
-            transform: scale(0); animation: rippleAnim 0.5s linear; pointer-events: none;
+        /* iOS Bottom Dock Navigation */
+        .bottom-nav {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 20px 30px; 
+            display: flex; justify-content: space-between;
+            align-items: center; 
+            border-top: 1px solid rgba(255, 255, 255, 0.6); 
+            z-index: 20;
+            border-radius: 40px 40px 0 0;
+            padding-bottom: 30px; /* Safe area */
         }
-        @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
+        .icon-btn {
+            background: rgba(255,255,255,0.7);
+            border: none;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .icon-btn:active { transform: scale(0.85); }
+        .nav-left { display: flex; gap: 15px; }
+
+        .date-display { font-size: 0.9rem; font-weight: 600; color: #555; }
+
+        /* Notification Toasts iOS Style */
         .toast-msg {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-            padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; display: none; width: 90%; text-align: center;
-            color: white;
+            position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+            padding: 12px 24px; border-radius: 30px; font-size: 0.95rem; font-weight: 500; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1000; 
+            display: none; text-align: center; color: #333;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+            animation: slideDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .error-toast { background: #e74c3c; }
-        .success-toast { background: #2ecc71; }
-        .cal-toast { background: #3498db; }
+        @keyframes slideDown { from{top: 40px; opacity:0;} to{top: 80px; opacity:1;} }
 
+        /* Reminder Overlay */
         .reminder-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             display: none; justify-content: center; align-items: center; z-index: 2000;
         }
         .reminder-box {
-            background: linear-gradient(135deg, #fff9e6, #ffe4b5);
-            padding: 30px; border-radius: 20px; text-align: center;
-            width: 85%; border: 4px solid #006400; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            animation: popIn 0.3s ease-out;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px 30px; border-radius: 35px; text-align: center;
+            width: 85%; border: 1px solid rgba(255,255,255,0.6); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .reminder-box h3 { font-family: 'Yatra One', cursive; color: #b06ab3; font-size: 1.8rem; margin-bottom: 10px; }
-        .reminder-box p { font-size: 1.1rem; color: #5b3e18; margin-bottom: 20px; font-weight: 600; }
+        .reminder-box h3 { font-family: 'Yatra One', cursive; color: #d35400; font-size: 2rem; margin-bottom: 15px; }
+        .reminder-box p { font-size: 1.1rem; color: #555; margin-bottom: 25px; font-weight: 500; line-height: 1.5; }
         .reminder-btn {
-            background: linear-gradient(90deg, #b06ab3, #4568dc); color: #fff; border: none; padding: 10px 30px;
-            font-size: 1.1rem; border-radius: 30px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-family: 'Poppins', sans-serif;
+            background: #222; color: #fff; border: none; padding: 15px 40px;
+            font-size: 1.1rem; border-radius: 30px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: all 0.2s;
         }
-
-        .bottom-nav {
-            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px);
-            color: #5b3e18; padding: 15px 20px; display: flex; justify-content: space-between;
-            align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.5); font-size: 0.85rem; z-index: 10;
-        }
-
-        .notify-icon {
-            font-size: 1.3rem; cursor: pointer; transition: transform 0.2s; padding: 5px;
-        }
-        .notify-icon:active { transform: scale(0.8); }
-        .nav-left { display: flex; gap: 15px; }
+        .reminder-btn:active { transform: scale(0.95); }
 
     </style>
 </head>
@@ -192,22 +249,21 @@
 
     <audio id="maharajJiSound" src="radha_naam.mp3" preload="auto"></audio>
 
+    <div class="bubbles" id="bubbleContainer"></div>
+
     <div class="app-container" id="appContainer">
         
-        <div id="errorToast" class="toast-msg error-toast">⚠️ ऑडियो फाइल (radha_naam.mp3) नहीं मिली!</div>
-        <div id="reminderToast" class="toast-msg success-toast">🔔 नोटिफिकेशन चालू हो गए हैं!</div>
-        <div id="calToast" class="toast-msg cal-toast">📅 कैलेंडर इवेंट डाउनलोड हो गया!</div>
+        <div id="toastMsg" class="toast-msg"></div>
 
         <div id="reminderOverlay" class="reminder-overlay">
             <div class="reminder-box">
                 <h3>🦚 श्री राधे 🦚</h3>
-                <p>राधा रानी और बिहारी जी आपका स्मरण कर रहे हैं।<br>कृपया कुछ समय निकालकर जाप करें।</p>
+                <p>राधा रानी आपका स्मरण कर रही हैं।<br>कृपया कुछ समय निकालकर जाप करें।</p>
                 <button class="reminder-btn" onclick="closeReminder()">जय श्री कृष्णा</button>
             </div>
         </div>
 
-        <div class="top-bar">🦚 श्री राधा 🦚</div>
-        <div class="status-pill"><span id="syncStatus">✨ आत्मिक शांति</span></div>
+        <div class="top-island">✨ श्री राधा ✨</div>
 
         <div class="main-area">
             <div class="counter-box">
@@ -216,40 +272,57 @@
                 <div class="mala-count">माला: <span id="malaDisplay">0</span></div>
             </div>
 
-            <div style="position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center;">
-                <div class="mala-ring"></div>
-                <button class="gold-btn" id="tapBtn">जाप</button>
-            </div>
+            <button class="tap-btn" id="tapBtn">जाप</button>
         </div>
 
         <div class="bottom-nav">
             <div class="nav-left">
-                <span id="notifyBtn" class="notify-icon" title="नोटिफिकेशन चालू करें">🔔</span>
-                <span id="calBtn" class="notify-icon" title="Apple Calendar में जोड़ें">📅</span>
+                <button id="muteBtn" class="icon-btn" title="आवाज़ बंद/चालू करें">🔊</button>
+                <button id="notifyBtn" class="icon-btn" title="रिमाइंडर चालू करें">🔔</button>
+                <button id="calBtn" class="icon-btn" title="Apple Calendar में जोड़ें">📅</button>
             </div>
-            <strong id="dateDisplay"></strong>
-            <span>✨</span>
+            <div class="date-display" id="dateDisplay"></div>
         </div>
     </div>
 
     <script>
-        const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+        // Set Current Date
+        const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
         document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('hi-IN', dateOptions);
 
+        // State Variables
+        let currentCount = parseInt(localStorage.getItem('radhaJapCount')) || 0;
+        let isMuted = false;
+        let isAudioCtxInitialized = false;
+        let audioCtx;
+        let reminderInterval;
+
+        // Elements
         const countDisplay = document.getElementById('countDisplay');
         const malaDisplay = document.getElementById('malaDisplay');
         const tapBtn = document.getElementById('tapBtn');
+        const muteBtn = document.getElementById('muteBtn');
         const notifyBtn = document.getElementById('notifyBtn');
         const calBtn = document.getElementById('calBtn');
         const maharajJiAudio = document.getElementById('maharajJiSound');
-        const errorToast = document.getElementById('errorToast');
-        const reminderToast = document.getElementById('reminderToast');
-        const calToast = document.getElementById('calToast');
+        const toastMsg = document.getElementById('toastMsg');
         const reminderOverlay = document.getElementById('reminderOverlay');
 
-        let currentCount = parseInt(localStorage.getItem('radhaJapCount')) || 0;
-        let isAudioCtxInitialized = false;
-        let audioCtx;
+        // Bubble Generation
+        function createBubbles() {
+            const container = document.getElementById('bubbleContainer');
+            for (let i = 0; i < 15; i++) {
+                let bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.width = `${Math.random() * 20 + 10}px`;
+                bubble.style.height = bubble.style.width;
+                bubble.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(bubble);
+            }
+        }
+        createBubbles();
 
         function updateDisplays() {
             countDisplay.innerText = currentCount.toLocaleString('en-IN');
@@ -257,8 +330,22 @@
         }
         updateDisplays();
 
+        function showToast(msg) {
+            toastMsg.innerText = msg;
+            toastMsg.style.display = 'block';
+            setTimeout(() => { toastMsg.style.display = 'none'; }, 3000);
+        }
+
+        // Mute / Unmute Logic
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            muteBtn.innerText = isMuted ? '🔇' : '🔊';
+            showToast(isMuted ? "आवाज़ बंद कर दी गई है" : "आवाज़ चालू कर दी गई है");
+        });
+
+        // Synthetic Chime for 108 Completion
         function playDivineChime() {
-            if (!audioCtx) return;
+            if (isMuted || !audioCtx) return;
             if(audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
@@ -267,156 +354,121 @@
             osc.frequency.setValueAtTime(880, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 2); 
             gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5);
             osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 2.5);
         }
 
-        // --- APPLE CALENDAR (.ICS) GENERATION ---
-        calBtn.addEventListener('click', () => {
-            const now = new Date();
-            // अगले दिन सुबह 6 बजे का डिफ़ॉल्ट टाइम सेट करें
-            now.setDate(now.getDate() + 1);
-            now.setHours(6, 0, 0, 0);
-
-            // UTC Format YYYYMMDDTHHMMSSZ
-            const startStr = now.toISOString().replace(/-|:|\.\d+/g, '');
-            now.setHours(7, 0, 0, 0); // 1 घंटे का इवेंट
-            const endStr = now.toISOString().replace(/-|:|\.\d+/g, '');
-
-            const icsData = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Shree Radha Jap//iOS App//EN
-CALSCALE:GREGORIAN
-BEGIN:VEVENT
-SUMMARY:🦚 श्री राधा नाम जाप
-DTSTART:${startStr}
-DTEND:${endStr}
-RRULE:FREQ=DAILY
-DESCRIPTION:राधा रानी और बिहारी जी आपका स्मरण कर रहे हैं। अपना कुछ समय निकालकर नाम जाप करें।
-STATUS:CONFIRMED
-SEQUENCE:0
-BEGIN:VALARM
-TRIGGER:-PT15M
-ACTION:DISPLAY
-DESCRIPTION:Reminder
-END:VALARM
-END:VEVENT
-END:VCALENDAR`;
-
-            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'Radha_Jap_Reminder.ics';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-
-            calToast.style.display = 'block';
-            setTimeout(() => { calToast.style.display = 'none'; }, 3000);
-        });
-
-        notifyBtn.addEventListener('click', () => {
-            if (!("Notification" in window)) {
-                alert("आपका ब्राउज़र नोटिफिकेशन सपोर्ट नहीं करता है।");
-                return;
-            }
-            
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    new Notification("हरे कृष्ण! 🙏", {
-                        body: "आपके ब्राउज़र नोटिफिकेशन सफलतापूर्वक चालू हो गए हैं!",
-                        icon: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
-                    });
-                    reminderToast.style.display = 'block';
-                    setTimeout(() => { reminderToast.style.display = 'none'; }, 3000);
-                } else {
-                    alert("आपने नोटिफिकेशन की अनुमति नहीं दी है। कृपया ब्राउज़र सेटिंग्स चेक करें।");
-                }
-            });
-        });
-
-        let reminderSet = false;
-        function setupHourlyReminder() {
-            if (reminderSet) return;
-            reminderSet = true;
-            
-            setInterval(() => {
+        // 1-Hour Reminder Logic (3600000 ms)
+        function startHourlyReminder() {
+            if (reminderInterval) clearInterval(reminderInterval);
+            reminderInterval = setInterval(() => {
                 reminderOverlay.style.display = 'flex';
-                if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
                 
                 if ("Notification" in window && Notification.permission === "granted") {
                     new Notification("🦚 श्री राधा जाप का समय 🦚", {
-                        body: "राधा रानी और बिहारी जी आपका स्मरण कर रहे हैं।",
+                        body: "राधा रानी आपका स्मरण कर रही हैं। कृपया समय निकालें।",
                         icon: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
                     });
                 }
-            }, 3600000); 
+            }, 3600000); // 1 Hour
         }
 
         function closeReminder() {
             reminderOverlay.style.display = 'none';
         }
 
+        // Calendar Download
+        calBtn.addEventListener('click', () => {
+            const now = new Date();
+            now.setDate(now.getDate() + 1);
+            now.setHours(6, 0, 0, 0);
+            const startStr = now.toISOString().replace(/-|:|\.\d+/g, '');
+            now.setHours(7, 0, 0, 0); 
+            const endStr = now.toISOString().replace(/-|:|\.\d+/g, '');
+
+            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Shree Radha Jap//iOS App//EN\nCALSCALE:GREGORIAN\nBEGIN:VEVENT\nSUMMARY:🦚 श्री राधा नाम जाप\nDTSTART:${startStr}\nDTEND:${endStr}\nRRULE:FREQ=DAILY\nDESCRIPTION:राधा रानी और बिहारी जी आपका स्मरण कर रहे हैं। अपना कुछ समय निकालकर नाम जाप करें।\nSTATUS:CONFIRMED\nBEGIN:VALARM\nTRIGGER:-PT15M\nACTION:DISPLAY\nDESCRIPTION:Reminder\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
+
+            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'Radha_Jap_Reminder.ics';
+            document.body.appendChild(a); a.click();
+            window.URL.revokeObjectURL(url); document.body.removeChild(a);
+
+            showToast("📅 कैलेंडर इवेंट डाउनलोड हो गया!");
+        });
+
+        // Notifications Request
+        notifyBtn.addEventListener('click', () => {
+            if (!("Notification" in window)) {
+                alert("आपका ब्राउज़र नोटिफिकेशन सपोर्ट नहीं करता है।");
+                return;
+            }
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("हरे कृष्ण! 🙏", { body: "आपके नोटिफिकेशन चालू हो गए हैं!" });
+                    showToast("🔔 नोटिफिकेशन चालू हो गए हैं!");
+                    startHourlyReminder(); // Start timer when granted
+                } else {
+                    showToast("⚠️ नोटिफिकेशन की अनुमति नहीं मिली।");
+                }
+            });
+        });
+
+        // Main Tap Logic
         tapBtn.addEventListener('pointerdown', function(e) {
             e.preventDefault();
             
             if (!isAudioCtxInitialized) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 isAudioCtxInitialized = true;
-                setupHourlyReminder(); 
+                startHourlyReminder(); // Start 1-hour timer on first interaction
             }
             
+            // Counter Update
             currentCount++;
             localStorage.setItem('radhaJapCount', currentCount);
             updateDisplays();
+            
+            // Pop Animation Reset
             countDisplay.classList.remove('pop-anim');
             void countDisplay.offsetWidth; 
             countDisplay.classList.add('pop-anim');
 
-            maharajJiAudio.currentTime = 0; 
-            let playPromise = maharajJiAudio.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    errorToast.style.display = 'block';
-                    setTimeout(() => { errorToast.style.display = 'none'; }, 3000);
-                    console.log("Audio Error:", error);
-                });
+            // Audio Logic
+            if (!isMuted) {
+                maharajJiAudio.currentTime = 0; 
+                let playPromise = maharajJiAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => { console.log("Audio Error:", error); });
+                }
             }
 
+            // Mala Completion Check
             if(currentCount > 0 && currentCount % 108 === 0) {
                 playDivineChime();
-                if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
                 
                 if ("Notification" in window && Notification.permission === "granted") {
                     new Notification("📿 एक माला पूर्ण", {
-                        body: `बधाई हो! आपने ${Math.floor(currentCount / 108)} माला पूर्ण कर ली हैं। राधा रानी कृपा करें।`,
+                        body: `बधाई हो! आपने ${Math.floor(currentCount / 108)} माला पूर्ण कर ली हैं।`,
                         icon: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
                     });
                 }
             } else {
-                if (navigator.vibrate) navigator.vibrate([15]);
+                if (navigator.vibrate) navigator.vibrate([15]); // Soft Haptic
             }
 
-            const circle = document.createElement('span');
-            circle.classList.add('ripple');
-            const diameter = Math.max(tapBtn.clientWidth, tapBtn.clientHeight);
-            const radius = diameter / 2;
+            // Floating Text Animation
             const rect = tapBtn.getBoundingClientRect();
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX) || rect.left + radius;
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY) || rect.top + radius;
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${clientX - rect.left - radius}px`;
-            circle.style.top = `${clientY - rect.top - radius}px`;
-            tapBtn.appendChild(circle);
-            setTimeout(() => circle.remove(), 500);
-
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX) || rect.left + rect.width/2;
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY) || rect.top + rect.height/2;
+            
             const floatingText = document.createElement('div');
             floatingText.classList.add('floating-radha');
-            floatingText.innerText = "राधा राधा कृष्ण कृष्ण हरि हरि";
+            floatingText.innerText = "राधे राधे";
             floatingText.style.left = `${clientX - 125}px`; 
             floatingText.style.top = `${clientY - 40}px`;
             document.body.appendChild(floatingText);
